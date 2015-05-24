@@ -2,6 +2,7 @@ require 'socket'
 require 'thread'
 require 'fileutils'
 
+
 class StorageServer
 
   def initialize(name)
@@ -62,9 +63,10 @@ end
 class Pool
 
 
-  def initialize(size)
+  def initialize(port, size)
 
     # Size thread pool and Queue for storing clients
+    @folder = 'abc'
     @size = size
     @jobs = Queue.new
 
@@ -74,6 +76,11 @@ class Pool
     @@c_rooms = Hash.new
     @@members = Hash.new
     @@memByID = Hash.new
+
+    if !File.directory?("#{@folder}")
+      Dir.mkdir "#{@folder}"
+    end
+    #Dir.chdir("\#{@folder}")
 
     # Creating our pool of threads
     @pool = Array.new(@size) do |i|
@@ -137,9 +144,14 @@ class Pool
   def open_file(client, msg)
     fname = msg[/OPEN:(.*)\n/,1]
     puts "--#{fname}--"
-    File.open(fname)
-    @reply = "OK: #{fname}\n"
 
+    path = "#{@folder}/#{fname}"
+    ex_path = File.expand_path(path)
+    puts ex_path
+    #File.open("#{Dir.home}/#{path}")
+    f = File.open(path)
+    p 'done'
+    @reply = "OK: #{fname}\n"
     client.puts("#{@reply}")
 
     #connected(client)
@@ -148,8 +160,8 @@ class Pool
   def close_file(client, msg)
     fname = msg[/CLOSE:(.*)\n/,1]
     puts "--#{fname}--"
-
-    File.close(fname)
+    path = "#{@folder}/#{fname}"
+    File.close(path)
 
     @reply = "OK: #{fname}\n"
 
@@ -162,12 +174,15 @@ class Pool
     fname = msg[/READ:(.*)\n/,1]
     puts "--#{fname}--"
 
-    fmsg = File.read(fname)
+    path = "#{@folder}/#{fname}"
+
+    fmsg = File.read(path)
     puts fmsg
     # file = File.open(fname, 'wb')
     # file.print("test shorter ")
     # file.close()
     p 'done'
+
     @reply = "OK: #{fname}\n"
     @reply+= "MESSAGE: #{fmsg}\n"
 
@@ -180,6 +195,7 @@ class Pool
   def write_file(client, msg)
     fname = msg[/WRITE:(.*)\n/,1]
     puts "--#{fname}--"
+    path = "#{@folder}/#{fname}"
 
     msg = client.gets
     w_msg = msg[/MESSAGE:(.*)\n/,1]
@@ -192,7 +208,7 @@ class Pool
 =end
 
     #puts w_msg
-    file = File.open(fname, 'wb')
+    file = File.open(path, 'wb')
     file.print(w_msg)
     file.close()
     p 'done'
@@ -366,7 +382,7 @@ class Server
   def initialize( port )
     @server = TCPServer.open( port )
     puts "Server started on port #{port}"
-    @serverPool = Pool.new(10)
+    @serverPool = Pool.new(port, 10)
     @serverPool.serverDetails( port )
     run
   end
