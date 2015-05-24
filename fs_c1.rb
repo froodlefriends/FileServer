@@ -1,7 +1,7 @@
 require 'socket'      # Sockets are in standard library
 
 hostname = 'localhost'
-port = 2000
+port = 2001
 
   msg = 'OPEN:'
   msg += "test.txt\n"
