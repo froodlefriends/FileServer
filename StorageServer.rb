@@ -1,7 +1,7 @@
 require 'socket'
 require 'thread'
 require 'fileutils'
-
+require 'base64'
 
 class Pool
 
@@ -18,9 +18,16 @@ class Pool
       Dir.mkdir "#{@folder}"
     end
     @list = Dir.entries "#{@folder}"
-    p @list
+    p @list[2]
+    p @list.length
 
-    ds_msg = "JOIN: #{port}\nLIST: #{@list}\n"
+    ds_msg = "JOIN:#{port}\nLIST:"
+    i=2
+    while i<@list.length
+      ds_msg += "#{@list[i]}\n"
+      i+=1
+    end
+    ds_msg += "\n"      #DO THE OTHER SIDE, BREAKING IT UP AND SAVING FOR EACH FILE!
     s = TCPSocket.open('localhost', ds_port)
     loop do
         s.puts ds_msg

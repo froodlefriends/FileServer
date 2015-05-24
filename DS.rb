@@ -1,26 +1,23 @@
 require 'socket'
 require 'thread'
+require 'base64'
 
-class StorageServer
+
+class DirectoryFile
 
   def initialize(name)
-    @cr_members = Hash.new
+    @servers = Hash.new
     @name = name
+    @lock = 0
+    #@num_servers = 0
   end
 
-  def add(nickname, client)
-    if !@cr_members[nickname]
-      @cr_members[nickname] = client
-
-      @cr_members.each do |nn, client|
-        if client and nn != nickname
-          client.puts "#{nickname} has joined #{@name} chatroom"
-        end
-      end
-
-    end
+  # NEED TO CHANGE THIS TO ADD PORT
+  def add(s_port)
+    @servers[s_port] = 1
   end
 
+=begin
   def broadcast(ref, nickname, message)
     #puts 'broadcasting'
     #text = message.join('\n')
@@ -33,16 +30,10 @@ class StorageServer
       end
     end
   end
+=end
 
-  def leave(nickname)
-    @cr_members[nickname] = nil
-
-    @cr_members.each do |nn, client|
-      if client and nn != nickname
-        client.puts "#{nickname} has left #{@name} chatroom"
-      end
-    end
-
+  def leave(s_port)
+    @servers[s_port] = 0
   end
 
   def check_members(nickname)
@@ -58,6 +49,7 @@ class StorageServer
 
 end
 
+
 class Pool
 
 
@@ -67,12 +59,16 @@ class Pool
     @size = size
     @jobs = Queue.new
 
+    @@liveServers = Hash.new
+    @@files = Hash.new
+=begin
     @@clientNum = 0
     @@roomNum = 0
     @@rooms = Hash.new
     @@c_rooms = Hash.new
     @@members = Hash.new
     @@memByID = Hash.new
+=end
 
     # Creating our pool of threads
     @pool = Array.new(@size) do |i|
@@ -99,22 +95,18 @@ class Pool
     case message
       when /HELO .*\n/
         helo(client, message)
-        connected(client)
-      when /JOIN_CHATROOM:.*\n/
-        join_cr(client, message)
-        connected(client)
+      when /JOIN:.*\n/
+        join(client, message)
+      when /LIST:.*\n/
+        list(client, message)
       when /OPEN:.*\n/
         open_file(client, message)
-        connected(client)
       when /CLOSE:.*\n/
         close_file(client, message)
-        connected(client)
       when /READ:.*\n/
         read_file(client, message)
-        connected(client)
       when /WRITE:.*\n/
         write_file(client, message)
-        connected(client)
       when /KILL_SERVICE.*\n/
         kill_server
       else
@@ -132,6 +124,38 @@ class Pool
     client.puts("#{@reply}")
   end
 
+  def join(client, msg)
+    s_port = msg[/JOIN:.*\n/]
+    msg = client.gets
+
+    if @@liveServers.empty?
+      p 'about to become pm'
+      s_pm = 1
+    else
+      p 'not pm'
+      s_pm = 0
+    end
+
+    t_list = msg[/^LIST:(.*)\n/,1]
+    #p t_list
+    #p "#{t_list}"
+    #@@liveServers[s_port].each do |f_name|
+    begin
+      if !@@files[t_list]
+        @@files[t_list] = DirectoryFile.new(t_list)
+      end
+      @@files[t_list].add(s_port)
+
+      t_list = client.gets.chomp
+      p "#{t_list}"
+    end while t_list != ''
+    p 'here'
+    @reply = "ACK: #{s_port}"
+    @reply += "\nISPM: #{s_pm}\n"
+    #@reply = Base64.encode(@reply)
+    client.puts("#{@reply}")
+
+  end
 
   def open_file(client, msg)
     fname = msg[/OPEN:(.*)\n/,1]
@@ -310,7 +334,7 @@ class Pool
       puts message
 
       if message[/DISCONNECT:.*\n/]
-      disconnect(client, message)
+        disconnect(client, message)
         break
       end
 
@@ -362,7 +386,7 @@ class Pool
       end while msg != ''
 
       @@c_rooms[@c_room].broadcast(@c_room, @nickname, @chat_msg)
-     end
+    end
 
   end
 
