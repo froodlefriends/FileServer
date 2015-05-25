@@ -145,7 +145,7 @@ class Pool
     msg = client.gets
     p s_port
 
-    if !@pm
+    if @pm<1
       p 'about to become pm'
       s_pm = 1
       @pm = s_port
@@ -153,7 +153,8 @@ class Pool
       p 'not pm'
       s_pm = 0
     end
-
+    p '@pm is'
+    p @pm
     t_list = msg[/^LIST:(.*)\n/,1]
     #p t_list
     #p "#{t_list}"
@@ -187,275 +188,56 @@ class Pool
   end
 
   def open_file(client, msg)
-    fname = msg[/OPEN:(.*)\n/,1]
-    @clientIP = client.gets
-    @clientPort = client.gets
-    msg = client.gets
-    @nickname = msg[/CLIENT_NAME:(.*)\n/,1]
-
-    if !@@rooms[@room]
-      @roomID = @@roomNum += 1
-      @@c_rooms[@roomID] = ChatRoom.new(@room)
-      @@rooms[@room] = @roomID
+    fname = msg[/^OPEN:(.*)\n/,1]
+    p fname
+    if !@@files[fname]
+      p 'no file'
+      @reply = "ERROR:This file does not exist\n"
+    else
+      p 'yup file'
+      c = @@files[fname].getList()
+      @reply = "OK:#{fname}\nSLIST:#{c}\n"
     end
-
-    if !@@members[@nickname]
-      @clientID = @@clientNum +=1
-      @@members[@nickname] = @clientID
-      @@memByID[@clientID] = @nickname
-    end
-
-    @@c_rooms[@@rooms[@room]].add(@nickname, client)
-
-    @ipAddr = client.peeraddr[3].to_s
-
-    @reply = "JOINED_CHATROOM: #{@room}\n"
-    @reply += "SERVER_IP: lg12l15.scss.tcd.ie\n" #{@ipAddr}
-    @reply += "Port: #{@port}\n"
-    @reply += "ROOM_REF: #{@@rooms[@room]}\n"
-    @reply += "JOIN_ID: #{@@members[@nickname]}\n"
-
+    p @reply
     client.puts("#{@reply}")
 
-    #connected(client)
   end
 
   def close_file(client, msg)
-    @room = msg[/JOIN_CHATROOM:(.*)\n/,1]
-    @clientIP = client.gets
-    @clientPort = client.gets
-    msg = client.gets
-    @nickname = msg[/CLIENT_NAME:(.*)\n/,1]
+    fname = msg[/CLOSE:(.*)\n/,1]
 
-    if !@@rooms[@room]
-      @roomID = @@roomNum += 1
-      @@c_rooms[@roomID] = ChatRoom.new(@room)
-      @@rooms[@room] = @roomID
+    if !@@files[fname]
+      @reply = "ERROR:This file does not exist\n"
+    else
+      c = @@files[fname].getList()
+      @reply = "OK:#{fname}\nSLIST:#{c}\n"
     end
-
-    if !@@members[@nickname]
-      @clientID = @@clientNum +=1
-      @@members[@nickname] = @clientID
-      @@memByID[@clientID] = @nickname
-    end
-
-    @@c_rooms[@@rooms[@room]].add(@nickname, client)
-
-    @ipAddr = client.peeraddr[3].to_s
-
-    @reply = "JOINED_CHATROOM: #{@room}\n"
-    @reply += "SERVER_IP: lg12l15.scss.tcd.ie\n" #{@ipAddr}
-    @reply += "Port: #{@port}\n"
-    @reply += "ROOM_REF: #{@@rooms[@room]}\n"
-    @reply += "JOIN_ID: #{@@members[@nickname]}\n"
-
     client.puts("#{@reply}")
-
-    #connected(client)
   end
 
   def read_file(client, msg)
-    @room = msg[/JOIN_CHATROOM:(.*)\n/,1]
-    @clientIP = client.gets
-    @clientPort = client.gets
-    msg = client.gets
-    @nickname = msg[/CLIENT_NAME:(.*)\n/,1]
+    fname = msg[/READ:(.*)\n/,1]
 
-    if !@@rooms[@room]
-      @roomID = @@roomNum += 1
-      @@c_rooms[@roomID] = ChatRoom.new(@room)
-      @@rooms[@room] = @roomID
+    if !@@files[fname]
+      @reply = "ERROR:This file does not exist\n"
+    else
+      c = @@files[fname].getList()
+      @reply = "OK:#{fname}\nSLIST:#{c}\n"
     end
-
-    if !@@members[@nickname]
-      @clientID = @@clientNum +=1
-      @@members[@nickname] = @clientID
-      @@memByID[@clientID] = @nickname
-    end
-
-    @@c_rooms[@@rooms[@room]].add(@nickname, client)
-
-    @ipAddr = client.peeraddr[3].to_s
-
-    @reply = "JOINED_CHATROOM: #{@room}\n"
-    @reply += "SERVER_IP: lg12l15.scss.tcd.ie\n" #{@ipAddr}
-    @reply += "Port: #{@port}\n"
-    @reply += "ROOM_REF: #{@@rooms[@room]}\n"
-    @reply += "JOIN_ID: #{@@members[@nickname]}\n"
-
     client.puts("#{@reply}")
-
-    #connected(client)
   end
 
   def write_file(client, msg)
-    @room = msg[/JOIN_CHATROOM:(.*)\n/,1]
-    @clientIP = client.gets
-    @clientPort = client.gets
-    msg = client.gets
-    @nickname = msg[/CLIENT_NAME:(.*)\n/,1]
+    fname = msg[/WRITE:(.*)\n/,1]
 
-    if !@@rooms[@room]
-      @roomID = @@roomNum += 1
-      @@c_rooms[@roomID] = ChatRoom.new(@room)
-      @@rooms[@room] = @roomID
-    end
-
-    if !@@members[@nickname]
-      @clientID = @@clientNum +=1
-      @@members[@nickname] = @clientID
-      @@memByID[@clientID] = @nickname
-    end
-
-    @@c_rooms[@@rooms[@room]].add(@nickname, client)
-
-    @ipAddr = client.peeraddr[3].to_s
-
-    @reply = "JOINED_CHATROOM: #{@room}\n"
-    @reply += "SERVER_IP: lg12l15.scss.tcd.ie\n" #{@ipAddr}
-    @reply += "Port: #{@port}\n"
-    @reply += "ROOM_REF: #{@@rooms[@room]}\n"
-    @reply += "JOIN_ID: #{@@members[@nickname]}\n"
-
-    client.puts("#{@reply}")
-
-    #connected(client)
-  end
-
-
-  def join_cr(client, msg)
-    @room = msg[/JOIN_CHATROOM:(.*)\n/,1]
-    @clientIP = client.gets
-    @clientPort = client.gets
-    msg = client.gets
-    @nickname = msg[/CLIENT_NAME:(.*)\n/,1]
-
-    if !@@rooms[@room]
-      @roomID = @@roomNum += 1
-      @@c_rooms[@roomID] = ChatRoom.new(@room)
-      @@rooms[@room] = @roomID
-    end
-
-    if !@@members[@nickname]
-      @clientID = @@clientNum +=1
-      @@members[@nickname] = @clientID
-      @@memByID[@clientID] = @nickname
-    end
-
-    @@c_rooms[@@rooms[@room]].add(@nickname, client)
-
-    @ipAddr = client.peeraddr[3].to_s
-
-    @reply = "JOINED_CHATROOM: #{@room}\n"
-    @reply += "SERVER_IP: lg12l15.scss.tcd.ie\n" #{@ipAddr}
-    @reply += "Port: #{@port}\n"
-    @reply += "ROOM_REF: #{@@rooms[@room]}\n"
-    @reply += "JOIN_ID: #{@@members[@nickname]}\n"
-
-    client.puts("#{@reply}")
-
-    #connected(client)
-  end
-
-  def connected(client)
-    loop{
-      message = client.gets
-      puts message
-
-      if message[/DISCONNECT:.*\n/]
-        disconnect(client, message)
-        break
-      end
-
-      case message
-        when /HELO .*\n/
-          helo(client, message)
-        when /JOIN_CHATROOM:.*\n/
-          join_cr(client, message)
-        when /CHAT:.*\n/
-          chat(client, message)
-        when /LEAVE_CHATROOM:.*\n/
-          leave_cr(client, message)
-        when /KILL_SERVICE.*\n/
-          kill_server
-        else
-          puts 'unknown'
-          unknown(client, message)
-      end
-    }
-  end
-
-  def chat(client, msg)
-    @c_room = msg[/CHAT:(.*)\n/,1].to_i
-    msg = client.gets
-    puts msg
-    @clientID = msg[/JOIN_ID:(.*)\n/,1]
-    msg = client.gets
-    puts msg
-    @nickname = msg[/CLIENT_NAME:(.*)\n/,1]
-
-    if !@@c_rooms[@c_room]
-      client.puts('ERROR_CODE: 101\nERROR_DESCRIPTION: No such chatroom exists')
-      client.close
-    end
-
-    @checker = @@c_rooms[@c_room].check_members(@nickname)
-
-
-    if @checker == 0
-      client.puts('ERROR_CODE: 102\nERROR_DESCRIPTION: You have not joined this chatroom')
-      client.close
+    if !@@files[fname]
+      @reply = "ERROR:This file does not exist\n"
     else
-      msg = client.gets
-      @chat_msg = msg[/MESSAGE:(.*)\n/,1]
-
-      begin
-        msg = client.gets.chomp
-        @chat_msg += "\n#{msg}"
-      end while msg != ''
-
-      @@c_rooms[@c_room].broadcast(@c_room, @nickname, @chat_msg)
+      p "#{@pm}"
+      @reply = "OK:#{fname}\nPM:#{@pm}\n"
     end
-
-  end
-
-  def leave_cr(client, msg)
-
-    @c_room = msg[/LEAVE_CHATROOM:(.*)\n/,1].to_i
-    puts @c_room
-    msg = client.gets
-    @clientID = msg[/JOIN_ID:(.*)\n/,1]
-    puts @clientID
-    msg = client.gets
-    @nickname = msg[/CLIENT_NAME:(.*)\n/,1]
-    puts@nickname
-
-    @@c_rooms[@c_room].leave(@nickname)
-
-    @reply = "LEFT_CHATROOM:#{@c_room}\n"
-    @reply += "JOIN_ID: #{@clientID}"
-
     client.puts("#{@reply}")
-  end
 
-  def disconnect(client, msg)
-    @clientIP = msg
-    @clientPort = client.gets
-
-    msg = client.gets
-    @nickname = msg[/CLIENT_NAME:(.*)\n/,1]
-    @checker = 0
-    @@c_rooms.each_value do |cr|
-      if cr
-        @checker = cr.check_members(@nickname)
-        if @checker
-          cr.leave(@nickname)
-        end
-
-      end
-    end
-    client.puts('Goodbye '+"#{@nickname}")
-    client.close
   end
 
   def kill_server

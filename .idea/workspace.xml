@@ -3,8 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="cabc14fa-764c-4bb7-8c48-50debe9fb294" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/DS.rb" afterPath="$PROJECT_DIR$/DS.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/FileServer.iml" afterPath="$PROJECT_DIR$/.idea/FileServer.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/StorageServer.rb" afterPath="$PROJECT_DIR$/StorageServer.rb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/StorageServer1.rb" afterPath="$PROJECT_DIR$/StorageServer1.rb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/StorageServer2.rb" afterPath="$PROJECT_DIR$/StorageServer2.rb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fs_c1.rb" afterPath="$PROJECT_DIR$/fs_c1.rb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/FS2001/test.txt" afterPath="$PROJECT_DIR$/FS2001/test.txt" />
     </list>
@@ -19,10 +20,10 @@
   <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/FileServer@StorageServer2.coverage" NAME="StorageServer2 Coverage Results" MODIFIED="1432512261210" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="FileServer" />
-    <SUITE FILE_PATH="coverage/FileServer@StorageServer1.coverage" NAME="StorageServer1 Coverage Results" MODIFIED="1432512400708" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="FileServer" />
-    <SUITE FILE_PATH="coverage/FileServer@DS.coverage" NAME="DS Coverage Results" MODIFIED="1432512392374" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="FileServer" />
-    <SUITE FILE_PATH="coverage/FileServer@fs_c1.coverage" NAME="fs_c1 Coverage Results" MODIFIED="1432512423744" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="FileServer" />
-    <SUITE FILE_PATH="coverage/FileServer@StorageServer.coverage" NAME="StorageServer Coverage Results" MODIFIED="1432512397023" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="FileServer" />
+    <SUITE FILE_PATH="coverage/FileServer@StorageServer1.coverage" NAME="StorageServer1 Coverage Results" MODIFIED="1432516191316" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="FileServer" />
+    <SUITE FILE_PATH="coverage/FileServer@DS.coverage" NAME="DS Coverage Results" MODIFIED="1432519819974" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="FileServer" />
+    <SUITE FILE_PATH="coverage/FileServer@fs_c1.coverage" NAME="fs_c1 Coverage Results" MODIFIED="1432520422917" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="FileServer" />
+    <SUITE FILE_PATH="coverage/FileServer@StorageServer.coverage" NAME="StorageServer Coverage Results" MODIFIED="1432519824443" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="FileServer" />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
@@ -38,26 +39,14 @@
     <splitter split-orientation="horizontal" split-proportion="0.42194092">
       <split-first>
         <leaf>
-          <file leaf-file-name="fs_c1.rb" pinned="false" current="false" current-in-tab="false">
+          <file leaf-file-name="fs_c1.rb" pinned="false" current="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/fs_c1.rb">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="426" max-vertical-offset="1275">
-                  <caret line="61" column="36" selection-start-line="61" selection-start-column="36" selection-end-line="61" selection-end-column="36" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="DS.rb" pinned="false" current="true" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/DS.rb">
-              <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="-1.9537712" vertical-offset="1347" max-vertical-offset="7446">
-                  <caret line="61" column="4" selection-start-line="61" selection-start-column="4" selection-end-line="61" selection-end-column="4" />
+                <state vertical-scroll-proportion="0.03773585" vertical-offset="2126" max-vertical-offset="2737">
+                  <caret line="177" column="42" selection-start-line="177" selection-start-column="42" selection-end-line="177" selection-end-column="42" />
                   <folding>
-                    <element signature="e#477#1047#0" expanded="false" />
-                    <element signature="e#1254#1401#0" expanded="false" />
-                    <element signature="e#1646#2406#0" expanded="false" />
-                    <element signature="e#2410#2656#0" expanded="false" />
+                    <element signature="e#1031#1732#0" expanded="false" />
+                    <element signature="e#1985#2492#0" expanded="false" />
                   </folding>
                 </state>
               </provider>
@@ -70,12 +59,12 @@
           <file leaf-file-name="StorageServer.rb" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/StorageServer.rb">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="391" max-vertical-offset="3553">
-                  <caret line="39" column="11" selection-start-line="0" selection-start-column="0" selection-end-line="242" selection-end-column="20" />
+                <state vertical-scroll-proportion="0.0" vertical-offset="1496" max-vertical-offset="3536">
+                  <caret line="119" column="28" selection-start-line="0" selection-start-column="0" selection-end-line="241" selection-end-column="20" />
                   <folding>
-                    <element signature="e#1859#2105#0" expanded="false" />
-                    <element signature="e#2109#2353#0" expanded="false" />
-                    <element signature="e#2616#3018#0" expanded="false" />
+                    <element signature="e#1794#2040#0" expanded="false" />
+                    <element signature="e#2044#2288#0" expanded="false" />
+                    <element signature="e#2551#2953#0" expanded="false" />
                   </folding>
                 </state>
               </provider>
@@ -84,19 +73,35 @@
           <file leaf-file-name="StorageServer1.rb" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/StorageServer1.rb">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="2670" max-vertical-offset="4216">
-                  <caret line="164" column="17" selection-start-line="0" selection-start-column="0" selection-end-line="242" selection-end-column="20" />
+                <state vertical-scroll-proportion="0.0" vertical-offset="3775" max-vertical-offset="4199">
+                  <caret line="241" column="19" selection-start-line="241" selection-start-column="19" selection-end-line="241" selection-end-column="19" />
                   <folding />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="StorageServer2.rb" pinned="false" current="false" current-in-tab="true">
+          <file leaf-file-name="StorageServer2.rb" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/StorageServer2.rb">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.44103774" vertical-offset="2584" max-vertical-offset="4216">
-                  <caret line="163" column="11" selection-start-line="163" selection-start-column="11" selection-end-line="163" selection-end-column="11" />
+                <state vertical-scroll-proportion="0.0" vertical-offset="3707" max-vertical-offset="4199">
+                  <caret line="241" column="19" selection-start-line="241" selection-start-column="19" selection-end-line="241" selection-end-column="19" />
                   <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="DS.rb" pinned="false" current="true" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/DS.rb">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.121212125" vertical-offset="2247" max-vertical-offset="3842">
+                  <caret line="178" column="22" selection-start-line="178" selection-start-column="22" selection-end-line="178" selection-end-column="22" />
+                  <folding>
+                    <element signature="e#477#1047#0" expanded="false" />
+                    <element signature="e#1254#1401#0" expanded="false" />
+                    <element signature="e#2410#2656#0" expanded="false" />
+                    <element signature="e#3379#3584#0" expanded="false" />
+                    <element signature="e#3588#3914#0" expanded="false" />
+                  </folding>
                 </state>
               </provider>
             </entry>
@@ -117,11 +122,11 @@
     <option name="changedFiles">
       <list>
         <option value="$PROJECT_DIR$/DirectoryServer.rb" />
-        <option value="$PROJECT_DIR$/fs_c1.rb" />
+        <option value="$PROJECT_DIR$/DS.rb" />
         <option value="$PROJECT_DIR$/StorageServer.rb" />
+        <option value="$PROJECT_DIR$/fs_c1.rb" />
         <option value="$PROJECT_DIR$/StorageServer1.rb" />
         <option value="$PROJECT_DIR$/StorageServer2.rb" />
-        <option value="$PROJECT_DIR$/DS.rb" />
       </list>
     </option>
   </component>
@@ -324,9 +329,9 @@
     <recent_temporary>
       <list size="5">
         <item index="0" class="java.lang.String" itemvalue="Ruby.fs_c1" />
-        <item index="1" class="java.lang.String" itemvalue="Ruby.StorageServer1" />
-        <item index="2" class="java.lang.String" itemvalue="Ruby.StorageServer" />
-        <item index="3" class="java.lang.String" itemvalue="Ruby.DS" />
+        <item index="1" class="java.lang.String" itemvalue="Ruby.StorageServer" />
+        <item index="2" class="java.lang.String" itemvalue="Ruby.DS" />
+        <item index="3" class="java.lang.String" itemvalue="Ruby.StorageServer1" />
         <item index="4" class="java.lang.String" itemvalue="Ruby.StorageServer2" />
       </list>
     </recent_temporary>
@@ -384,14 +389,19 @@
     </option>
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager />
+    <breakpoint-manager>
+      <option name="time" value="1" />
+    </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/fs_c1.rb">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="454" max-vertical-offset="1207">
           <caret line="10" column="12" selection-start-line="10" selection-start-column="12" selection-end-line="10" selection-end-column="12" />
-          <folding />
+          <folding>
+            <element signature="e#1031#1732#0" expanded="false" />
+            <element signature="e#1985#2492#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -400,58 +410,62 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="170" max-vertical-offset="3519">
           <caret line="10" column="30" selection-start-line="10" selection-start-column="30" selection-end-line="10" selection-end-column="30" />
           <folding>
-            <element signature="e#1859#2105#0" expanded="false" />
-            <element signature="e#2109#2353#0" expanded="false" />
-            <element signature="e#2616#3018#0" expanded="false" />
+            <element signature="e#1794#2040#0" expanded="false" />
+            <element signature="e#2044#2288#0" expanded="false" />
+            <element signature="e#2551#2953#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/fs_c1.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="426" max-vertical-offset="1275">
-          <caret line="61" column="36" selection-start-line="61" selection-start-column="36" selection-end-line="61" selection-end-column="36" />
-          <folding />
+        <state vertical-scroll-proportion="0.03773585" vertical-offset="2126" max-vertical-offset="2737">
+          <caret line="177" column="42" selection-start-line="177" selection-start-column="42" selection-end-line="177" selection-end-column="42" />
+          <folding>
+            <element signature="e#1031#1732#0" expanded="false" />
+            <element signature="e#1985#2492#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/StorageServer.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="391" max-vertical-offset="3553">
-          <caret line="39" column="11" selection-start-line="0" selection-start-column="0" selection-end-line="242" selection-end-column="20" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="1496" max-vertical-offset="3536">
+          <caret line="119" column="28" selection-start-line="0" selection-start-column="0" selection-end-line="241" selection-end-column="20" />
           <folding>
-            <element signature="e#1859#2105#0" expanded="false" />
-            <element signature="e#2109#2353#0" expanded="false" />
-            <element signature="e#2616#3018#0" expanded="false" />
+            <element signature="e#1794#2040#0" expanded="false" />
+            <element signature="e#2044#2288#0" expanded="false" />
+            <element signature="e#2551#2953#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/StorageServer1.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="2670" max-vertical-offset="4216">
-          <caret line="164" column="17" selection-start-line="0" selection-start-column="0" selection-end-line="242" selection-end-column="20" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="3775" max-vertical-offset="4199">
+          <caret line="241" column="19" selection-start-line="241" selection-start-column="19" selection-end-line="241" selection-end-column="19" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/StorageServer2.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.44103774" vertical-offset="2584" max-vertical-offset="4216">
-          <caret line="163" column="11" selection-start-line="163" selection-start-column="11" selection-end-line="163" selection-end-column="11" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="3707" max-vertical-offset="4199">
+          <caret line="241" column="19" selection-start-line="241" selection-start-column="19" selection-end-line="241" selection-end-column="19" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/DS.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.9537712" vertical-offset="1347" max-vertical-offset="7446">
-          <caret line="61" column="4" selection-start-line="61" selection-start-column="4" selection-end-line="61" selection-end-column="4" />
+        <state vertical-scroll-proportion="0.121212125" vertical-offset="2247" max-vertical-offset="3842">
+          <caret line="178" column="22" selection-start-line="178" selection-start-column="22" selection-end-line="178" selection-end-column="22" />
           <folding>
             <element signature="e#477#1047#0" expanded="false" />
             <element signature="e#1254#1401#0" expanded="false" />
-            <element signature="e#1646#2406#0" expanded="false" />
             <element signature="e#2410#2656#0" expanded="false" />
+            <element signature="e#3379#3584#0" expanded="false" />
+            <element signature="e#3588#3914#0" expanded="false" />
           </folding>
         </state>
       </provider>

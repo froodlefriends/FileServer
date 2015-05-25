@@ -69,8 +69,6 @@ class Pool
     case message
       when /HELO .*\n/
         helo(client, message)
-      when /JOIN_CHATROOM:.*\n/
-        join_cr(client, message)
       when /OPEN:.*\n/
         open_file(client, message)
       when /CLOSE:.*\n/
@@ -191,6 +189,7 @@ class Pool
       s.close()
     end
     @reply = "OK: #{fname}\n"
+    p 'sending reply'
     client.puts("#{@reply}")
 
     #connected(client)
