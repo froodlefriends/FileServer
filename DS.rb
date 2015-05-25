@@ -32,24 +32,30 @@ class DirectoryFile
   end
 
   def lock
+    p @lock
     if @lock<1
+      p 'lock is less than 1'
       @lock = 1
       t = Time.new
       @ts=t.to_i
       p 'ts:'
       p @ts
+      p @lock
       return 1
     else
+      p 'lock is greater than 1'
       return 0
     end
   end
 
   def acquire_lock
-    c_ts = Time.new
-    curr_ts = c_ts.to_i
-    if (@ts - curr_ts > 10)
-      @ts = curr_ts         # Time out lock if another client waiting too long
-      return 1
+    if @lock < 1
+      c_ts = Time.new
+      curr_ts = c_ts.to_i
+      if (@ts - curr_ts > 10)
+        @ts = curr_ts         # Time out lock if another client waiting too long
+        return 1
+      end
     else
       return 0
     end
@@ -243,18 +249,23 @@ class Pool
     else
       p 'yup file'
       c = ''
+      lck = 0
       ts = 0
-      if @@files[fname].lock()
+      proc = @@files[fname].lock()
+      if proc > 0
         c = @@files[fname].getList()
       else
         t = Time.new
         ts=t.to_i
-        while !@@files[fname].acquire_lock
+        while proc < 1
+          p 'waiting for lock'
           sleep(2)
+          proc = @@files[fname].acquire_lock
         end
       end
+      lck = 1
       ts = @@files[fname].get_ts
-      @reply = "OK:#{fname}\nTS:#{ts}\nSLIST:#{c}\n"
+      @reply = "OK:#{fname}\nTS:#{ts}\nLOCK:#{lck}\nSLIST:#{c}\n"
     end
     p @reply
     client.puts("#{@reply}")

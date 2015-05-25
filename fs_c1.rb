@@ -3,6 +3,7 @@ require 'socket'      # Sockets are in standard library
 hostname = 'localhost'
 @ds_port = 2000
 @timestamp = 0
+@lock = 0
 
   msg = 'OPEN:'
   msg += "test.txt\n"
@@ -17,6 +18,10 @@ hostname = 'localhost'
       fname = message[/^OK:(.*)\n/,1]
       message = s.gets
       @timestamp = message[/^TS:(.*)\n/,1]
+      message = s.gets
+      @lock = message[/^LOCK:(.*)\n/,1]
+      p 'lock'
+      p @lock
       message = s.gets
       fserver = message[/^SLIST:(.*)\n/,1]
       tempfs = fserver
