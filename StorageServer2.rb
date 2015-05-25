@@ -31,16 +31,16 @@ class Pool
     ds_msg += "\n"
     s = TCPSocket.open('localhost', @ds_port)
     loop do
-        s.puts ds_msg
-        message = s.gets
-        puts message
-        case message
-          when /^ACK: .*\n/
-            msg = s.gets
-            mp_msg = msg[/^ISPM:(.*)\n/,1]    #sets whether is Primary Manager or not
-            @isPM = mp_msg.to_i
-            break
-        end
+      s.puts ds_msg
+      message = s.gets
+      puts message
+      case message
+        when /^ACK: .*\n/
+          msg = s.gets
+          mp_msg = msg[/^ISPM:(.*)\n/,1]    #sets whether is Primary Manager or not
+          @isPM = mp_msg.to_i
+          break
+      end
     end
     s.close
 
@@ -78,7 +78,7 @@ class Pool
       when /READ:.*\n/
         read_file(client, message)
       when /WRITE:.*\n/
-          write_file(client, message)
+        write_file(client, message)
       when /KILL_SERVICE.*\n/
         kill_server
       else
@@ -116,7 +116,7 @@ class Pool
     path = "#{@folder}/#{fname}"
     f = File.open(path)
     f.close()
-  p 'yo'
+    p 'yo'
     @reply = "OK: #{fname}\n"
 
     client.puts("#{@reply}")
@@ -162,7 +162,7 @@ class Pool
     p 'done'
 
     p @isPM
-    if @isPM
+    if (@isPM > 0)
       ds_msg = "REP:#{fname}"
       # Get list of replica managers
       s = TCPSocket.open('localhost', @ds_port)
@@ -240,4 +240,4 @@ end
 
 port = ARGV.shift
 #s = Server.new(port)
-s = Server.new(2001)
+s = Server.new(2003)

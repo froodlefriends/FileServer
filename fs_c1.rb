@@ -50,7 +50,9 @@ port = 2001
 
   s.puts msg
   message = s.gets
+  f_msg = s.gets
   puts message
+  p f_msg
 
   s.close
 
@@ -64,3 +66,5 @@ port = 2001
   puts message
 
   s.close
+
+  p 'The End'

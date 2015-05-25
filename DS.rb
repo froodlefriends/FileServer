@@ -5,6 +5,7 @@ require 'base64'
 
 class DirectoryFile
 
+  @@currServs = Hash.new
   def initialize(name)
     @servers = Hash.new
     @name = name
@@ -15,6 +16,18 @@ class DirectoryFile
   # NEED TO CHANGE THIS TO ADD PORT
   def add(s_port)
     @servers[s_port] = 1
+  end
+
+  def getList()
+    c = ''
+    @servers.each do |pt, val|
+      if val
+        @@currServs[pt] = @servers[pt]
+        p val
+        c += "#{pt}\n"
+      end
+    end
+    return c
   end
 
 =begin
@@ -30,7 +43,7 @@ class DirectoryFile
       end
     end
   end
-=end
+
 
   def leave(s_port)
     @servers[s_port] = 0
@@ -46,14 +59,13 @@ class DirectoryFile
     end
     return c
   end
-
+=end
 end
 
 
 class Pool
 
-
-  def initialize(size)
+  def initialize(port, size)
 
     # Size thread pool and Queue for storing clients
     @size = size
@@ -61,6 +73,8 @@ class Pool
 
     @@liveServers = Hash.new
     @@files = Hash.new
+
+    @pm = 0
 =begin
     @@clientNum = 0
     @@roomNum = 0
@@ -99,6 +113,8 @@ class Pool
         join(client, message)
       when /LIST:.*\n/
         list(client, message)
+      when /REP:.*\n/
+        rep(client, message)
       when /OPEN:.*\n/
         open_file(client, message)
       when /CLOSE:.*\n/
@@ -125,12 +141,14 @@ class Pool
   end
 
   def join(client, msg)
-    s_port = msg[/JOIN:.*\n/]
+    s_port = msg[/^JOIN:(.*)\n/,1]
     msg = client.gets
+    p s_port
 
-    if @@liveServers.empty?
+    if !@pm
       p 'about to become pm'
       s_pm = 1
+      @pm = s_port
     else
       p 'not pm'
       s_pm = 0
@@ -151,10 +169,21 @@ class Pool
     end while t_list != ''
     p 'here'
     @reply = "ACK: #{s_port}"
-    @reply += "\nISPM: #{s_pm}\n"
+    @reply += "\nISPM:#{s_pm}\n"
     #@reply = Base64.encode(@reply)
     client.puts("#{@reply}")
 
+  end
+
+  def rep(client, msg)
+    f_name = msg[/^REP:(.*)\n/,1]
+    p f_name
+
+    c = @@files[f_name].getList()
+    p c
+    p 'miracle!'
+    @reply = "OK:#{f_name}\nRMLIST:#{c}\n"
+    client.puts("#{@reply}")
   end
 
   def open_file(client, msg)
@@ -456,7 +485,7 @@ class Server
   def initialize( port )
     @server = TCPServer.open( port )
     puts "Server started on port #{port}"
-    @serverPool = Pool.new(10)
+    @serverPool = Pool.new(port, 10)
     @serverPool.serverDetails( port )
     run
   end
