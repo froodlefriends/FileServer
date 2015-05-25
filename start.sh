@@ -1,0 +1,1 @@
+ruby Lab2server.rb $1
