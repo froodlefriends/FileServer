@@ -50,21 +50,27 @@ class DirectoryFile
 
   def acquire_lock
     if @lock < 1
+      return 1
+    else
       c_ts = Time.new
       curr_ts = c_ts.to_i
+      p @ts
+      p curr_ts
       if (@ts - curr_ts > 10)
         @ts = curr_ts         # Time out lock if another client waiting too long
         return 1
+      else
+        return 0
       end
-    else
-      return 0
     end
   end
 
   def updateTS(c_ts)
+    p 'in updateTS'
     p c_ts
     p @ts
-    if (c_ts == @ts)
+    if (c_ts.to_i == @ts)
+      p 'in if statement'
       n_ts = Time.new
       curr_ts = n_ts.to_i
       @ts = curr_ts
@@ -79,6 +85,7 @@ class DirectoryFile
   end
 
   def unlock
+    p 'unlocking'
     @lock = 0
   end
 
@@ -262,6 +269,7 @@ class Pool
           sleep(2)
           proc = @@files[fname].acquire_lock
         end
+        c = @@files[fname].getList()
       end
       lck = 1
       ts = @@files[fname].get_ts
@@ -280,9 +288,11 @@ class Pool
     if !@@files[fname]
       @reply = "ERROR:This file does not exist\n"
     else
-      if (@@files[fname].updateTS(ts))
+      if (@@files[fname].updateTS(ts)>0)
         @@files[fname].unlock()
+        p 'qwerty1'
         c = @@files[fname].getList()
+        p 'qwerty2'
         @reply = "OK:#{fname}\nSLIST:#{c}\n"
       else
         @reply = "ERROR:Timeout Error\n"
