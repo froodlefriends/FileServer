@@ -31,16 +31,16 @@ class Pool
     ds_msg += "\n"
     s = TCPSocket.open('localhost', @ds_port)
     loop do
-        s.puts ds_msg
-        message = s.gets
-        puts message
-        case message
-          when /^ACK: .*\n/
-            msg = s.gets
-            mp_msg = msg[/^ISPM:(.*)\n/,1]    #sets whether is Primary Manager or not
-            @isPM = mp_msg.to_i
-            break
-        end
+      s.puts ds_msg
+      message = s.gets
+      puts message
+      case message
+        when /^ACK: .*\n/
+          msg = s.gets
+          mp_msg = msg[/^ISPM:(.*)\n/,1]    #sets whether is Primary Manager or not
+          @isPM = mp_msg.to_i
+          break
+      end
     end
     s.close
 
@@ -76,7 +76,7 @@ class Pool
       when /READ:.*\n/
         read_file(client, message)
       when /WRITE:.*\n/
-          write_file(client, message)
+        write_file(client, message)
       when /KILL_SERVICE.*\n/
         kill_server
       else
@@ -101,7 +101,6 @@ class Pool
     path = "#{@folder}/#{fname}"
 
     f = File.open(path)
-    p 'done'
     @reply = "OK: #{fname}\n"
     client.puts("#{@reply}")
 
@@ -114,7 +113,6 @@ class Pool
     path = "#{@folder}/#{fname}"
     f = File.open(path)
     f.close()
-  p 'yo'
     @reply = "OK: #{fname}\n"
 
     client.puts("#{@reply}")
@@ -129,21 +127,15 @@ class Pool
     path = "#{@folder}/#{fname}"
 
     fmsg = File.read(path)
-    puts fmsg
-    # file = File.open(fname, 'wb')
-    # file.print("test shorter ")
-    # file.close()
-    p 'done'
 
     @reply = "OK: #{fname}\n"
     @reply+= "MESSAGE: #{fmsg}\n"
 
-    puts @reply
     client.puts("#{@reply}")
 
-    #connected(client)
   end
 
+  # Writing to file. Need to check for RMs if are PM.
   def write_file(client, msg)
     fname = msg[/WRITE:(.*)\n/,1]
     puts "--#{fname}--"
@@ -157,9 +149,7 @@ class Pool
     file = File.open(path, 'wb')
     file.print(w_msg)
     file.close()
-    p 'done'
 
-    p @isPM
     if @isPM
       ds_msg = "REP:#{fname}"
       # Get list of replica managers
@@ -180,16 +170,13 @@ class Pool
 
           rm_s.puts rm_msg
           message = rm_s.gets
-          puts message
           rm_s.close
         end
         t_list = s.gets.chomp
-        p "#{t_list}"
       end while t_list != ''
       s.close()
     end
     @reply = "OK: #{fname}\n"
-    p 'sending reply'
     client.puts("#{@reply}")
 
     #connected(client)

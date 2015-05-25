@@ -1,3 +1,5 @@
+# DIRECTORY SERVER
+
 require 'socket'
 require 'thread'
 require 'base64'
@@ -14,48 +16,43 @@ class DirectoryFile
     #@num_servers = 0
   end
 
-  # NEED TO CHANGE THIS TO ADD PORT
   def add(s_port)
     @servers[s_port] = 1
   end
 
+  # To get list of servers holding replicas. Returns list
   def getList
     c = ''
     @servers.each do |pt, val|
       if val
         @@currServs[pt] = @servers[pt]
-        p val
+        #p val
         c += "#{pt}\n"
       end
     end
     return c
   end
 
+  # To acquire the lock if it is free when first request it
   def lock
-    p @lock
+    #p @lock
     if @lock<1
-      p 'lock is less than 1'
       @lock = 1
       t = Time.new
       @ts=t.to_i
-      p 'ts:'
-      p @ts
-      p @lock
       return 1
     else
-      p 'lock is greater than 1'
       return 0
     end
   end
 
+  # If fail on first attempt, sleep and try again using acquire_lock
   def acquire_lock
     if @lock < 1
       return 1
     else
       c_ts = Time.new
       curr_ts = c_ts.to_i
-      p @ts
-      p curr_ts
       if (@ts - curr_ts > 10)
         @ts = curr_ts         # Time out lock if another client waiting too long
         return 1
@@ -65,12 +62,11 @@ class DirectoryFile
     end
   end
 
+  # If the client holding the lock doesn't update regularly enough, the lock is taken off them
+  # If they show sign of life, update the lock's time stamp to make sure lock isn't taken off them
   def updateTS(c_ts)
-    p 'in updateTS'
-    p c_ts
-    p @ts
+
     if (c_ts.to_i == @ts)
-      p 'in if statement'
       n_ts = Time.new
       curr_ts = n_ts.to_i
       @ts = curr_ts
@@ -89,36 +85,6 @@ class DirectoryFile
     @lock = 0
   end
 
-=begin
-  def broadcast(ref, nickname, message)
-    #puts 'broadcasting'
-    #text = message.join('\n')
-    msg = "CHAT:#{ref}\nCLIENT_NAME:#{nickname}"
-    msg += "\nMESSAGE:#{message}\n\n"
-    #puts "#{msg}"
-    @cr_members.each do |nn, client|
-      if client and nn != nickname
-        client.puts msg
-      end
-    end
-  end
-
-
-  def leave(s_port)
-    @servers[s_port] = 0
-  end
-
-  def check_members(nickname)
-    c = 0
-    @cr_members.each do |nn, client|
-      if client and nn == nickname
-        c += 1
-        #leave(nn)
-      end
-    end
-    return c
-  end
-=end
 end
 
 
@@ -134,14 +100,6 @@ class Pool
     @@files = Hash.new
 
     @pm = 0
-=begin
-    @@clientNum = 0
-    @@roomNum = 0
-    @@rooms = Hash.new
-    @@c_rooms = Hash.new
-    @@members = Hash.new
-    @@memByID = Hash.new
-=end
 
     # Creating our pool of threads
     @pool = Array.new(@size) do |i|
@@ -199,25 +157,24 @@ class Pool
     client.puts("#{@reply}")
   end
 
+  # Server joining network. First server becomes primary manager,
+  # subsequent ones are replica managers so can only read from them
   def join(client, msg)
     s_port = msg[/^JOIN:(.*)\n/,1]
     msg = client.gets
-    p s_port
+    #p s_port
 
     if @pm<1
-      p 'about to become pm'
+      #p 'about to become pm'
       s_pm = 1
       @pm = s_port
     else
-      p 'not pm'
+      #p 'not pm'
       s_pm = 0
     end
-    p '@pm is'
-    p @pm
+
     t_list = msg[/^LIST:(.*)\n/,1]
-    #p t_list
-    #p "#{t_list}"
-    #@@liveServers[s_port].each do |f_name|
+
     begin
       if !@@files[t_list]
         @@files[t_list] = DirectoryFile.new(t_list)
@@ -225,36 +182,30 @@ class Pool
       @@files[t_list].add(s_port)
 
       t_list = client.gets.chomp
-      p "#{t_list}"
     end while t_list != ''
-    p 'here'
     @reply = "ACK: #{s_port}"
     @reply += "\nISPM:#{s_pm}\n"
-    #@reply = Base64.encode(@reply)
     client.puts("#{@reply}")
 
   end
 
+  # When the PM writes to a file it must tell the RMs to write to file too.
+  # REP is the call for the list of replica managers that have the file in question
   def rep(client, msg)
     f_name = msg[/^REP:(.*)\n/,1]
-    p f_name
 
     c = @@files[f_name].getList()
-    p c
-    p 'miracle!'
     @reply = "OK:#{f_name}\nRMLIST:#{c}\n"
     client.puts("#{@reply}")
   end
 
+  # Open file locks the file until it is closed again
   def open_file(client, msg)
     fname = msg[/^OPEN:(.*)\n/,1]
-    p fname
     @reply = ''
     if !@@files[fname]
-      p 'no file'
       @reply = "ERROR:This file does not exist\n"
     else
-      p 'yup file'
       c = ''
       lck = 0
       ts = 0
@@ -265,7 +216,6 @@ class Pool
         t = Time.new
         ts=t.to_i
         while proc < 1
-          p 'waiting for lock'
           sleep(2)
           proc = @@files[fname].acquire_lock
         end
@@ -275,11 +225,11 @@ class Pool
       ts = @@files[fname].get_ts
       @reply = "OK:#{fname}\nTS:#{ts}\nLOCK:#{lck}\nSLIST:#{c}\n"
     end
-    p @reply
     client.puts("#{@reply}")
 
   end
 
+  # File is unlocked in close_file
   def close_file(client, msg)
     fname = msg[/CLOSE:(.*)\n/,1]
     msg = client.gets
@@ -290,9 +240,7 @@ class Pool
     else
       if (@@files[fname].updateTS(ts)>0)
         @@files[fname].unlock()
-        p 'qwerty1'
         c = @@files[fname].getList()
-        p 'qwerty2'
         @reply = "OK:#{fname}\nSLIST:#{c}\n"
       else
         @reply = "ERROR:Timeout Error\n"
@@ -302,30 +250,27 @@ class Pool
     client.puts("#{@reply}")
   end
 
+  # Find out what servers can read from
   def read_file(client, msg)
     fname = msg[/READ:(.*)\n/,1]
     msg = client.gets
     ts = msg[/^TS:(.*)\n/,1]
     ts = ts.to_i
-    p ts
     if !@@files[fname]
       @reply = "ERROR:This file does not exist\n"
     else
       if (@@files[fname].updateTS(ts))
-        p 'I here'
         c = @@files[fname].getList()
-        p 'even here'
         ts = @@files[fname].get_ts
-        p 'now should work'
         @reply = "OK:#{fname}\nTS:#{ts}\nSLIST:#{c}\n"
       else
         @reply = "ERROR:Timeout Error\n"
       end
     end
-    p @reply
     client.puts("#{@reply}")
   end
 
+  # Find out who is primary manager so can write to file
   def write_file(client, msg)
     fname = msg[/WRITE:(.*)\n/,1]
     msg = client.gets
@@ -335,7 +280,6 @@ class Pool
       @reply = "ERROR:This file does not exist\n"
     else
       if (@@files[fname].updateTS(ts))
-        p "#{@pm}"
         ts = @@files[fname].get_ts
         @reply = "OK:#{fname}\nTS:#{ts}\nPM:#{@pm}\n"
       else
