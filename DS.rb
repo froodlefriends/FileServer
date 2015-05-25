@@ -10,6 +10,7 @@ class DirectoryFile
     @servers = Hash.new
     @name = name
     @lock = 0
+    @ts = 0
     #@num_servers = 0
   end
 
@@ -18,7 +19,7 @@ class DirectoryFile
     @servers[s_port] = 1
   end
 
-  def getList()
+  def getList
     c = ''
     @servers.each do |pt, val|
       if val
@@ -28,6 +29,51 @@ class DirectoryFile
       end
     end
     return c
+  end
+
+  def lock
+    if @lock<1
+      @lock = 1
+      t = Time.new
+      @ts=t.to_i
+      p 'ts:'
+      p @ts
+      return 1
+    else
+      return 0
+    end
+  end
+
+  def acquire_lock
+    c_ts = Time.new
+    curr_ts = c_ts.to_i
+    if (@ts - curr_ts > 10)
+      @ts = curr_ts         # Time out lock if another client waiting too long
+      return 1
+    else
+      return 0
+    end
+  end
+
+  def updateTS(c_ts)
+    p c_ts
+    p @ts
+    if (c_ts == @ts)
+      n_ts = Time.new
+      curr_ts = n_ts.to_i
+      @ts = curr_ts
+      return 1
+    else
+      return 0          # Means client has been timed out
+    end
+  end
+
+  def get_ts
+    return @ts
+  end
+
+  def unlock
+    @lock = 0
   end
 
 =begin
@@ -190,13 +236,25 @@ class Pool
   def open_file(client, msg)
     fname = msg[/^OPEN:(.*)\n/,1]
     p fname
+    @reply = ''
     if !@@files[fname]
       p 'no file'
       @reply = "ERROR:This file does not exist\n"
     else
       p 'yup file'
-      c = @@files[fname].getList()
-      @reply = "OK:#{fname}\nSLIST:#{c}\n"
+      c = ''
+      ts = 0
+      if @@files[fname].lock()
+        c = @@files[fname].getList()
+      else
+        t = Time.new
+        ts=t.to_i
+        while !@@files[fname].acquire_lock
+          sleep(2)
+        end
+      end
+      ts = @@files[fname].get_ts
+      @reply = "OK:#{fname}\nTS:#{ts}\nSLIST:#{c}\n"
     end
     p @reply
     client.puts("#{@reply}")
@@ -205,36 +263,63 @@ class Pool
 
   def close_file(client, msg)
     fname = msg[/CLOSE:(.*)\n/,1]
+    msg = client.gets
+    ts = msg[/^TS:(.*)\n/,1]
 
     if !@@files[fname]
       @reply = "ERROR:This file does not exist\n"
     else
-      c = @@files[fname].getList()
-      @reply = "OK:#{fname}\nSLIST:#{c}\n"
+      if (@@files[fname].updateTS(ts))
+        @@files[fname].unlock()
+        c = @@files[fname].getList()
+        @reply = "OK:#{fname}\nSLIST:#{c}\n"
+      else
+        @reply = "ERROR:Timeout Error\n"
+      end
     end
+
     client.puts("#{@reply}")
   end
 
   def read_file(client, msg)
     fname = msg[/READ:(.*)\n/,1]
-
+    msg = client.gets
+    ts = msg[/^TS:(.*)\n/,1]
+    ts = ts.to_i
+    p ts
     if !@@files[fname]
       @reply = "ERROR:This file does not exist\n"
     else
-      c = @@files[fname].getList()
-      @reply = "OK:#{fname}\nSLIST:#{c}\n"
+      if (@@files[fname].updateTS(ts))
+        p 'I here'
+        c = @@files[fname].getList()
+        p 'even here'
+        ts = @@files[fname].get_ts
+        p 'now should work'
+        @reply = "OK:#{fname}\nTS:#{ts}\nSLIST:#{c}\n"
+      else
+        @reply = "ERROR:Timeout Error\n"
+      end
     end
+    p @reply
     client.puts("#{@reply}")
   end
 
   def write_file(client, msg)
     fname = msg[/WRITE:(.*)\n/,1]
+    msg = client.gets
+    ts = msg[/^TS:(.*)\n/,1]
 
     if !@@files[fname]
       @reply = "ERROR:This file does not exist\n"
     else
-      p "#{@pm}"
-      @reply = "OK:#{fname}\nPM:#{@pm}\n"
+      if (@@files[fname].updateTS(ts))
+        p "#{@pm}"
+        ts = @@files[fname].get_ts
+        @reply = "OK:#{fname}\nTS:#{ts}\nPM:#{@pm}\n"
+      else
+        @reply = "ERROR:Timeout Error\n"
+      end
     end
     client.puts("#{@reply}")
 
