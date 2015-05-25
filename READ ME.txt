@@ -1,0 +1,7 @@
+This file server uses a directory server, replication and locking
+The first storage server to connect to the network becomes the Primary manager. This is the only storage server that the client can write to.
+The PM propagates the writes through to the replica managers who update their files and return an ack before the PM sends an ack to the client.
+Locking takes place on the document when it is opened and the lock is released when the document is closed.
+
+The clients have been implemented to each operate on different documents first, and then all attempt to operate on the same document.
+The lock must be acquired before they can access the second document.
